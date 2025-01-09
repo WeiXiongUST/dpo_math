@@ -21,33 +21,48 @@ from trl import DPOTrainer
 # Define and parse arguments.
 
 ############## MODIFICATION
+def is_sublist(sublist, larger_list):
+    return str(sublist)[1:-1] in str(larger_list)[1:-1]
+def set_minus_100(arr):
+    inside_non_minus_100 = False  # 标记是否进入非 -100 区间
+    for i in range(len(arr)):
+        if arr[i] != -100:
+            if not inside_non_minus_100:  # 第一次进入非 -100 区间
+                inside_non_minus_100 = True
+            arr[i] = -100  # 修改为 -100
+        elif inside_non_minus_100:  # 一旦重新遇到 -100，停止处理
+            break
+    return arr
 def get_new_mask(input_ids, old_labels, model='gemma'):
     # We mask the user turn to create new labels for Gemma model
+    
     labels = copy.deepcopy(old_labels)
+    assert len(labels) == len(input_ids)
     start = False
-    if 'gemma' in model.lower():
-        for j in range(len(input_ids)):
-            if input_ids[j:j+3] == [106, 1645, 108]:
-                start = True
-                labels[j:j+3] = -100
-            if input_ids[j:j+2] == [107, 108] and start:
-                labels[j] = -100
-                labels[j+1] = -100
-                start = False
-            if start:
-                labels[j] = -100
-    elif 'mistral' in model.lower():
-        for j in range(len(input_ids)):
-            if input_ids[j] == 3:
-                start = True
-                input_ids[j] = -100
-            if input_ids[j] == 4 and start:
-                labels[j] = -100
-                start = False
-            if start:
-                labels[j] = -100
+
+    sequence = [4815, 3957, 856, 1455] # \n\nIs my most ...
+    def find_sequence_start(lst_tmp, sequence):
+        for i in range(len(lst_tmp) - len(sequence) + 1):
+            if lst_tmp[i:i+len(sequence)] == sequence:
+                return i
+        return -1
+        
+    start_index = find_sequence_start(labels, sequence)
+    if start_index != -1:
+        labels[:start_index] = [-100] * start_index
     else:
-        raise NotImplementedError(model)
+        assert 1 == 0
+
+    for j in range(start_index, len(input_ids)):
+        if input_ids[j:j+4] == [128006, 882, 128007, 271]: # <|start_header_id|>user<|end_header_id|>\n\n
+            start = True
+            labels[j:j+4] = -100
+        if input_ids[j] == 128009 and start:
+            labels[j] = -100
+            start = False
+        if start:
+            labels[j] = -100
+
     return labels
 ############## MODIFICATION END
 
