@@ -39,7 +39,7 @@ class ScriptArguments:
         default="RLHF4MATH/Gemma-7B-1.1-it-iter1-random-pairs",
         metadata={"help": "the location of the evalset name or path"},
     )
-    learning_rate: Optional[float] = field(default=4e-7, metadata={"help": "optimizer learning rate"})
+    learning_rate: Optional[float] = field(default=2e-7, metadata={"help": "optimizer learning rate"})
     lr_scheduler_type: Optional[str] = field(default="cosine", metadata={"help": "the lr scheduler type"})
     warmup_steps: Optional[int] = field(default=50, metadata={"help": "the number of warmup steps"})
     weight_decay: Optional[float] = field(default=0.01, metadata={"help": "the weight decay"})
@@ -62,7 +62,7 @@ class ScriptArguments:
     margin_scale: Optional[float] = field(default=1.0, metadata={"help": "the margin scale"})
 
     max_prompt_length: Optional[int] = field(default=1000, metadata={"help": "the maximum prompt length"})
-    max_length: Optional[int] = field(default=2048, metadata={"help": "the maximum sequence length"})
+    max_length: Optional[int] = field(default=3700, metadata={"help": "the maximum sequence length"})
     max_steps: Optional[int] = field(default=4000, metadata={"help": "max number of training steps"})
     num_train_epochs: Optional[int] = field(default=2, metadata={"help": "max number of training epochs"})
     logging_steps: Optional[int] = field(default=2, metadata={"help": "the logging frequency"})
