@@ -39,7 +39,7 @@ def get_new_mask(input_ids, old_labels, model='gemma'):
     labels = copy.deepcopy(old_labels)
     assert len(labels) == len(input_ids)
     start = False
-
+    '''
     sequence = [4815, 3957, 856, 1455] # \n\nIs my most ...
     def find_sequence_start(lst_tmp, sequence):
         for i in range(len(lst_tmp) - len(sequence) + 1):
@@ -52,7 +52,8 @@ def get_new_mask(input_ids, old_labels, model='gemma'):
         labels[:start_index] = [-100] * start_index
     else:
         assert 1 == 0
-
+    '''
+    start_index = 3
     for j in range(start_index, len(input_ids)):
         if input_ids[j:j+4] == [128006, 882, 128007, 271]: # <|start_header_id|>user<|end_header_id|>\n\n
             start = True
